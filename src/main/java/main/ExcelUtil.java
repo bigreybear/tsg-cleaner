@@ -25,6 +25,31 @@ public class ExcelUtil {
         System.out.println(excel);
     }
 
+    Object multiFormatHandler(HSSFCell cell){
+        switch(cell.getCellType()){
+            case HSSFCell.CELL_TYPE_BOOLEAN:
+                //得到Boolean对象的方法
+                return cell.getBooleanCellValue();
+            case HSSFCell.CELL_TYPE_NUMERIC:
+                //先看是否是日期格式
+                if(HSSFDateUtil.isCellDateFormatted(cell)){
+                    //读取日期格式
+                    return cell.getDateCellValue();
+                }else{
+                    //读取数字
+                    return cell.getNumericCellValue();
+                }
+            case HSSFCell.CELL_TYPE_FORMULA:
+                //读取公式
+                return cell.getCellFormula();
+            case HSSFCell.CELL_TYPE_STRING:
+                //读取String
+                return cell.getRichStringCellValue();
+            default:
+                return null;
+        }
+    }
+
     void readTest() throws IOException{
         String target = "origin-studata/2013.xls";
         ClassLoader classLoader = getClass().getClassLoader();
@@ -36,6 +61,8 @@ public class ExcelUtil {
             System.out.println();
             for(Iterator itet = row.cellIterator(); itet.hasNext();){
                 HSSFCell cell=(HSSFCell)itet.next();
+                System.out.println(multiFormatHandler(cell));
+                /*
                 switch(cell.getCellType()){
                     case HSSFCell.CELL_TYPE_BOOLEAN:
                         //得到Boolean对象的方法
@@ -59,7 +86,8 @@ public class ExcelUtil {
                         //读取String
                         System.out.print(cell.getRichStringCellValue().toString()+" ");
                         break;
-                }
+
+                }*/
             }
         }
     }
