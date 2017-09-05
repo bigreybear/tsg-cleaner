@@ -59,44 +59,26 @@ public class ExcelUtil {
         for(Iterator ite=sheet.rowIterator();ite.hasNext();){
             HSSFRow row=(HSSFRow)ite.next();
             System.out.println();
-            for(Iterator itet = row.cellIterator(); itet.hasNext();){
-                HSSFCell cell=(HSSFCell)itet.next();
-                System.out.println(multiFormatHandler(cell));
-                /*
-                switch(cell.getCellType()){
-                    case HSSFCell.CELL_TYPE_BOOLEAN:
-                        //得到Boolean对象的方法
-                        System.out.print(cell.getBooleanCellValue()+" ");
-                        break;
-                    case HSSFCell.CELL_TYPE_NUMERIC:
-                        //先看是否是日期格式
-                        if(HSSFDateUtil.isCellDateFormatted(cell)){
-                            //读取日期格式
-                            System.out.print(cell.getDateCellValue()+" ");
-                        }else{
-                            //读取数字
-                            System.out.print(cell.getNumericCellValue()+" ");
-                        }
-                        break;
-                    case HSSFCell.CELL_TYPE_FORMULA:
-                        //读取公式
-                        System.out.print(cell.getCellFormula()+" ");
-                        break;
-                    case HSSFCell.CELL_TYPE_STRING:
-                        //读取String
-                        System.out.print(cell.getRichStringCellValue().toString()+" ");
-                        break;
-
-                }*/
-            }
+            System.out.println(multiFormatHandler(row.getCell(0)));
+            System.out.println(multiFormatHandler(row.getCell(1)));
+            System.out.println(multiFormatHandler(row.getCell(7)));
+            System.out.println(multiFormatHandler(row.getCell(8)));
+            System.out.println(multiFormatHandler(row.getCell(10)));
         }
+    }
+
+    void saveTest() throws IOException{
+        String fileName = "mid-store/SDS.bin";
+        ClassLoader classLoader = getClass().getClassLoader();
+        String url = classLoader.getResource(fileName).getFile();
+        System.out.println(url);
     }
 
     public static void main(String[] args) throws IOException{
         ExcelUtil eu = new ExcelUtil();
 //        eu.anytimeTest();
-        eu.readTest();
-
+//        eu.readTest();
+        eu.saveTest();
 
     }
 

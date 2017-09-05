@@ -1,15 +1,21 @@
 package model;
 
+import java.io.Serializable;
 import java.util.*;
 
-public class StuDataStruct {
+public class StuDataStruct implements Serializable{
     private int year;
     private Map<String, ArrayList<ClaStruct>> deps;
 
     public static void main(String[] args) {
         StuDataStruct sds = new StuDataStruct(2013);
         sds.addStu("ab", "cs", "css", "zhaoxin", 110);
-        System.out.println(sds.getClass());
+        System.out.println(sds.toString());
+//        Student st = new Student("zhaoxin", 123);
+//        System.out.println(st.toString());
+//        ClaStruct cs = new ClaStruct("li3", "css");
+//        cs.addStu(st);
+//        System.out.println(cs.toString());
 
     }
 
@@ -41,12 +47,30 @@ public class StuDataStruct {
         }
         ClaStruct ncs = new ClaStruct(_claName, _majName);
         ncs.addStu(_stuName, _id);
+        dep.add(ncs);
+        deps.put(_depName, dep);
     }
+
+    @Override
+    public String toString(){
+        String ret = String.format("Print all departments:\n");
+        String reta = null;
+        for(Map.Entry<String, ArrayList<ClaStruct>> ent : deps.entrySet()){
+            reta = String.format("Department: %s\n", ent.getKey());
+            for (ClaStruct cla: ent.getValue()) {
+                reta += "  ";
+                reta += cla.toString();
+            }
+            ret += reta;
+        }
+        return ret;
+    }
+
 
 }
 
 
-class ClaStruct{
+class ClaStruct implements Serializable{
     private String name;
     private String majName;
     private ArrayList<Student> stus;
@@ -54,6 +78,10 @@ class ClaStruct{
         name = _name;
         majName = _majName;
         stus = null;
+    }
+
+    public void addStu(Student stu){
+        this.addStu(stu.getName(), stu.getId());
     }
 
     public void addStu(String _name, int _id){
@@ -83,11 +111,12 @@ class ClaStruct{
 
     @Override
     public String toString(){
-        System.out.printf("Class Name: %s, Maj Name: %s\n", name, majName);
+        String ret = String.format("Class Name: %s, Maj Name: %s\n", name, majName);
         for (Student stu:stus) {
-            System.out.print("   ");
-            System.out.println(stu);
+            ret += String.format("   ");
+            ret += String.format(stu.toString());
         }
+        return ret;
     }
 
     public String getName() {
@@ -115,7 +144,7 @@ class ClaStruct{
     }
 }
 
-class Student{
+class Student implements Serializable{
     private String name;
     private int id;
     private int dup_cnt;
@@ -128,7 +157,8 @@ class Student{
 
     @Override
     public String toString(){
-        System.out.printf("Name: %s, ID: %d, dups:%d \n", name, id, dup_cnt);
+        String ret = String.format("Name: %s, ID: %d, dups:%d \n", name, id, dup_cnt);
+        return ret;
     }
 
     public String getName() {
