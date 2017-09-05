@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$//tsgstudatacleaner.iml" filepath="$PROJECT_DIR$//tsgstudatacleaner.iml" />
+      <module fileurl="file://$PROJECT_DIR$/tsg-studata-cleaner.iml" filepath="$PROJECT_DIR$/tsg-studata-cleaner.iml" />
     </modules>
   </component>
 </project>
