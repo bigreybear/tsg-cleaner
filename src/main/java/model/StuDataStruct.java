@@ -29,7 +29,7 @@ public class StuDataStruct implements Serializable{
             if (!ifFound) {
                 errRepo.put(i, "not found everywhere");
                 System.out.print(i);
-                System.out.println("not found");
+                System.out.println("  not found");
             }
 
         }

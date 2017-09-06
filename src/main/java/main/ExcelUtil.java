@@ -90,13 +90,35 @@ public class ExcelUtil {
         for(int rowNum = 1; rowNum < totalRows; rowNum++){
 
             row = xsheet.getRow(rowNum);
-            res = row.getCell(_colNo).getStringCellValue();
+//            try {
+//                res = Double.toString( row.getCell(_colNo).getNumericCellValue());
+//            }catch (IllegalStateException e){
+//                res = row.getCell(_colNo).getRawValue();
+//            }
+            res = row.getCell(_colNo).getRawValue();
             res.replace(" ", "");
             ret.add(res);
 
         }
+        ips.close();
         return ret;
     }
+
+    public ArrayList<String> markCertainCol(ArrayList<String> anoList, int compareCol, int markCol, String fileName)
+            throws IOException{
+        String target = "questionFile/" + fileName;
+        ClassLoader classLoader = getClass().getClassLoader();
+        System.out.println(classLoader.getResource(target).getFile());
+        FileInputStream ips = new FileInputStream(classLoader.getResource(target).getFile());
+        XSSFWorkbook xwb = new XSSFWorkbook(ips);
+        XSSFSheet xsheet = xwb.getSheetAt(0);
+
+        XSSFRow row = xsheet.getRow(0);
+        row.getCell(0).setCellValue("change");
+        ips.close();
+        return null;
+    }
+
 
     void getXLSLoaded(String fileName) throws IOException{
         String target = "origin-studata/" + fileName;
@@ -145,10 +167,11 @@ public class ExcelUtil {
         System.out.println("hello");
 
         ArrayList<String> tempRes;
-        tempRes = eu.getCertainCol("0903shsj2014.xlsx",0);
-//        System.out.println(tempRes);
+        tempRes = eu.getCertainCol("0904zyzxYCSJ.xlsx",0);
+        System.out.println(tempRes);
         ArrayList<Integer> intList = ExcelUtil.transformStringToInteger(tempRes);
         eu.sds.searchByIds(intList);
+//        eu.markCertainCol(null, 0, 0,"0904ZZB02.xlsx");
     }
 
 }
