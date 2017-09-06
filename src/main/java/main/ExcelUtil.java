@@ -1,9 +1,8 @@
 package main;
 
 import java.io.*;
-import java.text.DecimalFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.FormatFlagsConversionMismatchException;
 import java.util.Iterator;
 
 import org.apache.poi.hssf.usermodel.HSSFCell;
@@ -11,12 +10,38 @@ import org.apache.poi.hssf.usermodel.HSSFDateUtil;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
-import org.apache.poi.xssf.usermodel.XSSFCell;
+
+import model.StuDataStruct;
+import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
+import org.apache.poi.openxml4j.opc.OPCPackage;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 public class ExcelUtil {
+    StuDataStruct sds;
+
+    public static ArrayList<Integer> transformStringToInteger(ArrayList<String> strList){
+        ArrayList<Integer> intList = new ArrayList<Integer>();
+        for (String str: strList) {
+            try {
+                intList.add(Integer.parseInt(str));
+            }catch (NumberFormatException e){
+                e.printStackTrace();
+            }
+
+        }
+        return intList;
+    }
+
+    public ExcelUtil() throws IOException{
+        sds = new StuDataStruct(1911);
+        this.getXLSLoaded("2013.xls");
+        this.getXLSLoaded("2014.xls");
+        this.getXLSLoaded("2015.xls");
+        this.getXLSLoaded("2016.xls");
+        this.getXLSLoaded("2017.xls");
+    }
 
     void anytimeTest() {
         String target = "origin-studata/2013.xls";
@@ -50,36 +75,80 @@ public class ExcelUtil {
         }
     }
 
-    void readTest() throws IOException{
-        String target = "origin-studata/2013.xls";
+    public ArrayList<String> getCertainCol(String fileName, int _colNo) throws InvalidFormatException, IOException{
+        String target = "questionFile/" + fileName;
+        ClassLoader classLoader = getClass().getClassLoader();
+        System.out.println(classLoader.getResource(target).getFile());
+        FileInputStream ips = new FileInputStream(classLoader.getResource(target).getFile());
+        XSSFWorkbook xwb = new XSSFWorkbook(ips);
+        XSSFSheet xsheet = xwb.getSheetAt(0);
+        int totalRows = xsheet.getPhysicalNumberOfRows();
+
+        ArrayList<String> ret = new ArrayList<String>();
+        String res;
+        XSSFRow row;
+        for(int rowNum = 1; rowNum < totalRows; rowNum++){
+
+            row = xsheet.getRow(rowNum);
+            res = row.getCell(_colNo).getStringCellValue();
+            res.replace(" ", "");
+            ret.add(res);
+
+        }
+        return ret;
+    }
+
+    void getXLSLoaded(String fileName) throws IOException{
+        String target = "origin-studata/" + fileName;
         ClassLoader classLoader = getClass().getClassLoader();
         InputStream ips = new FileInputStream(classLoader.getResource(target).getFile());
         HSSFWorkbook wb = new HSSFWorkbook(ips);
         HSSFSheet sheet=wb.getSheetAt(0);
+        int stuId;
+        String stuName;
+        String depName;
+        String majName;
+        String claName;
+
         for(Iterator ite=sheet.rowIterator();ite.hasNext();){
             HSSFRow row=(HSSFRow)ite.next();
-            System.out.println();
-            System.out.println(multiFormatHandler(row.getCell(0)));
-            System.out.println(multiFormatHandler(row.getCell(1)));
-            System.out.println(multiFormatHandler(row.getCell(7)));
-            System.out.println(multiFormatHandler(row.getCell(8)));
-            System.out.println(multiFormatHandler(row.getCell(10)));
+//            System.out.println();
+//            System.out.println(multiFormatHandler(row.getCell(0)));
+            stuId = Integer.parseInt(multiFormatHandler(row.getCell(0)).toString());
+
+//            System.out.println(multiFormatHandler(row.getCell(1)));
+            stuName = multiFormatHandler(row.getCell(1)).toString();
+
+//            System.out.println(multiFormatHandler(row.getCell(7)));
+            depName = multiFormatHandler(row.getCell(7)).toString();
+
+//            System.out.println(multiFormatHandler(row.getCell(8)));
+            majName = multiFormatHandler(row.getCell(8)).toString();
+
+//            System.out.println(multiFormatHandler(row.getCell(10)));
+            claName = multiFormatHandler(row.getCell(10)).toString();
+            sds.addStu(depName, claName, majName, stuName, stuId);
         }
     }
 
     void saveTest() throws IOException{
         String fileName = "mid-store/SDS.bin";
         ClassLoader classLoader = getClass().getClassLoader();
-        String url = classLoader.getResource(fileName).getFile();
-        System.out.println(url);
+//        String url = classLoader.getResource(fileName).getFile();
+//        System.out.println(url);
     }
 
-    public static void main(String[] args) throws IOException{
+    public static void main(String[] args) throws IOException, InvalidFormatException{
         ExcelUtil eu = new ExcelUtil();
 //        eu.anytimeTest();
-//        eu.readTest();
-        eu.saveTest();
+//        eu.saveTest();
+        System.out.println("hello");
 
+        ArrayList<String> tempRes;
+        tempRes = eu.getCertainCol("0903shsj2014.xlsx",0);
+//        System.out.println(tempRes);
+        ArrayList<Integer> intList = ExcelUtil.transformStringToInteger(tempRes);
+        eu.sds.searchByIds(intList);
     }
 
 }

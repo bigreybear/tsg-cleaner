@@ -1,25 +1,47 @@
 package model;
 
+import java.awt.image.AreaAveragingScaleFilter;
 import java.io.Serializable;
 import java.util.*;
 
 public class StuDataStruct implements Serializable{
     private int year;
     private Map<String, ArrayList<ClaStruct>> deps;
+    private int totalStudent = 0;
 
     public static void main(String[] args) {
-        StuDataStruct sds = new StuDataStruct(2013);
-        sds.addStu("ab", "cs", "css", "zhaoxin", 110);
-        System.out.println(sds.toString());
-//        Student st = new Student("zhaoxin", 123);
-//        System.out.println(st.toString());
-//        ClaStruct cs = new ClaStruct("li3", "css");
-//        cs.addStu(st);
-//        System.out.println(cs.toString());
 
     }
 
-    StuDataStruct(int year){
+
+    public ArrayList<Integer> searchByIds(ArrayList<Integer> ids){
+        Map<Integer, String> errRepo = new HashMap<Integer, String>();
+        Boolean ifFound = false;
+        for (Integer i: ids) {
+            ifFound =false;
+            for (Map.Entry<String, ArrayList<ClaStruct>> ent: deps.entrySet()) {
+                for (ClaStruct cla: ent.getValue()) {
+                    if (cla.ifExsistOnlyOne(i)>=0) ifFound = true;
+                    if(ifFound) break;
+                }
+                if (ifFound) break;
+            }
+            if (!ifFound) {
+                errRepo.put(i, "not found everywhere");
+                System.out.print(i);
+                System.out.println("not found");
+            }
+
+        }
+        System.out.println(errRepo.size());
+        return null;
+    }
+
+    public StuDataStruct(){
+        this(1911);
+    }
+
+    public StuDataStruct(int year){
         this.year = year;
         deps = null;
     }
@@ -42,6 +64,7 @@ public class StuDataStruct implements Serializable{
                 index = dep.indexOf(cs);
                 cs.addStu(_stuName, _id);
                 dep.set(index, cs);
+                incTotalStudent();
                 return;
             }
         }
@@ -49,6 +72,7 @@ public class StuDataStruct implements Serializable{
         ncs.addStu(_stuName, _id);
         dep.add(ncs);
         deps.put(_depName, dep);
+        incTotalStudent();
     }
 
     @Override
@@ -66,7 +90,17 @@ public class StuDataStruct implements Serializable{
         return ret;
     }
 
+    public void incTotalStudent(){
+        this.totalStudent ++;
+    }
 
+    public int getTotalStudent() {
+        return totalStudent;
+    }
+
+    public void setTotalStudent(int totalStudent) {
+        this.totalStudent = totalStudent;
+    }
 }
 
 
@@ -99,14 +133,14 @@ class ClaStruct implements Serializable{
 
     public int ifExsistOnlyOne(int _id){
         if(stus==null){
-            return 0;
+            return -2;
         }
         for (Student stt:stus) {
             if(stt.getId() == _id){
                 return stt.getDup_cnt();
             }
         }
-        return 0;
+        return -1;
     }
 
     @Override
@@ -145,6 +179,9 @@ class ClaStruct implements Serializable{
 }
 
 class Student implements Serializable{
+    /**
+     * @member dup_cnt: means the number of the same name in one class.
+     */
     private String name;
     private int id;
     private int dup_cnt;
@@ -152,7 +189,7 @@ class Student implements Serializable{
     public Student(String _name, int _id){
         name = _name;
         id = _id;
-        dup_cnt = 0;
+        dup_cnt = 1;
     }
 
     @Override
