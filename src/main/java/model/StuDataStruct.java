@@ -1,7 +1,10 @@
 package model;
 
+import main.commonUtil;
+
 import java.awt.image.AreaAveragingScaleFilter;
 import java.io.Serializable;
+import java.net.Inet4Address;
 import java.util.*;
 
 public class StuDataStruct implements Serializable{
@@ -35,6 +38,48 @@ public class StuDataStruct implements Serializable{
         }
         System.out.println(errRepo.size());
         return null;
+    }
+
+    public ArrayList<Integer> searchByNameAndDep(ArrayList<String> names, ArrayList<String> deps){
+        if (names.size() != deps.size()){
+            System.out.println("Not enough name or deps");
+            return null;
+        }
+        int i = 0;
+        ArrayList<Integer> ret = new ArrayList<Integer>();
+        String name, dep;
+        boolean findOne = false;
+        ArrayList<ClaStruct> claList = new ArrayList<ClaStruct>();
+        while (i < names.size()) {
+            dep = commonUtil.onlyString(deps.get(i));
+            name = commonUtil.onlyString(names.get(i));
+            if (!this.deps.containsKey(dep)) {
+                ret.add(0);
+            } else {
+                claList = this.deps.get(dep);
+                for (ClaStruct cla : claList) {
+                    for (Student stu : cla.getStus()) {
+                        if (stu.getName().equals(name))
+                        {
+                            if (stu.getDup_cnt() == 1) {
+                                ret.add(stu.getId());
+                            } else {
+                                ret.add(1);
+                            }
+                            findOne = true;
+                            break;
+                        }
+                    }
+                    if (findOne) break;
+
+                }
+            }
+            if (!findOne) ret.add(0);
+            findOne = false;
+            i++;
+        }
+
+        return ret;
     }
 
     public StuDataStruct(){

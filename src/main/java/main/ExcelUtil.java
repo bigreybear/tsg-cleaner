@@ -2,7 +2,6 @@ package main;
 
 import java.io.*;
 import java.util.ArrayList;
-import java.util.FormatFlagsConversionMismatchException;
 import java.util.Iterator;
 
 import org.apache.poi.hssf.usermodel.HSSFCell;
@@ -13,7 +12,6 @@ import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 
 import model.StuDataStruct;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
-import org.apache.poi.openxml4j.opc.OPCPackage;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
@@ -21,18 +19,9 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 public class ExcelUtil {
     StuDataStruct sds;
 
-    public static ArrayList<Integer> transformStringToInteger(ArrayList<String> strList){
-        ArrayList<Integer> intList = new ArrayList<Integer>();
-        for (String str: strList) {
-            try {
-                intList.add(Integer.parseInt(str));
-            }catch (NumberFormatException e){
-                e.printStackTrace();
-            }
 
-        }
-        return intList;
-    }
+
+
 
     public ExcelUtil() throws IOException{
         sds = new StuDataStruct(1911);
@@ -95,7 +84,8 @@ public class ExcelUtil {
 //            }catch (IllegalStateException e){
 //                res = row.getCell(_colNo).getRawValue();
 //            }
-            res = row.getCell(_colNo).getRawValue();
+//            res = row.getCell(_colNo).getRawValue();
+            res = row.getCell(_colNo).getStringCellValue();
             res.replace(" ", "");
             ret.add(res);
 
@@ -166,11 +156,16 @@ public class ExcelUtil {
 //        eu.saveTest();
         System.out.println("hello");
 
-        ArrayList<String> tempRes;
-        tempRes = eu.getCertainCol("0904zyzxYCSJ.xlsx",0);
-        System.out.println(tempRes);
-        ArrayList<Integer> intList = ExcelUtil.transformStringToInteger(tempRes);
-        eu.sds.searchByIds(intList);
+        ArrayList<String> tempRes, depList, nameList;
+        ArrayList<Integer> tempResInt;
+        nameList = eu.getCertainCol("tybx-l.xlsx", 3);
+        depList = eu.getCertainCol("tybx-l.xlsx", 1);
+        tempResInt = eu.sds.searchByNameAndDep(nameList, depList);
+        System.out.println(nameList);
+        System.out.println(tempResInt);
+//        System.out.println(tempRes);
+//        ArrayList<Integer> intList = commonUtil.transformStringListToInteger(tempRes);
+//        eu.sds.searchByIds(intList);
 //        eu.markCertainCol(null, 0, 0,"0904ZZB02.xlsx");
     }
 
