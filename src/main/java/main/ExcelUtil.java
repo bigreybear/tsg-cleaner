@@ -158,11 +158,12 @@ public class ExcelUtil {
 
         ArrayList<String> tempRes, depList, nameList;
         ArrayList<Integer> tempResInt;
-        nameList = eu.getCertainCol("tybx-l.xlsx", 3);
-        depList = eu.getCertainCol("tybx-l.xlsx", 1);
-        tempResInt = eu.sds.searchByNameAndDep(nameList, depList);
-        System.out.println(nameList);
-        System.out.println(tempResInt);
+        nameList = eu.getCertainCol("LFS.xlsx", 0);
+        eu.sds.searchByIds(commonUtil.transformStringListToInteger(nameList));
+//        depList = eu.getCertainCol("LF5.xlsx", 2);
+//        tempResInt = eu.sds.searchByNameAndDep(nameList, depList);
+//        System.out.println(nameList);
+//        System.out.println(tempResInt);
 //        System.out.println(tempRes);
 //        ArrayList<Integer> intList = commonUtil.transformStringListToInteger(tempRes);
 //        eu.sds.searchByIds(intList);

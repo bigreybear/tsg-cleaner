@@ -37,7 +37,7 @@ public class commonUtil {
     }
 
     public static void main(String[] args) {
-        String exa = "   saas你 好（体 育 )";
+        String exa = "刘  鑫";
         System.out.println(onlyString(exa));
         ArrayList<String> ss = new ArrayList<String>();
         ss.add(exa);

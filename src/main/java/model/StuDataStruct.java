@@ -45,6 +45,7 @@ public class StuDataStruct implements Serializable{
             System.out.println("Not enough name or deps");
             return null;
         }
+        System.out.println(names.size());
         int i = 0;
         ArrayList<Integer> ret = new ArrayList<Integer>();
         String name, dep;
@@ -54,7 +55,8 @@ public class StuDataStruct implements Serializable{
             dep = commonUtil.onlyString(deps.get(i));
             name = commonUtil.onlyString(names.get(i));
             if (!this.deps.containsKey(dep)) {
-                ret.add(0);
+//                ret.add(0);
+//                System.out.println(dep);
             } else {
                 claList = this.deps.get(dep);
                 for (ClaStruct cla : claList) {
